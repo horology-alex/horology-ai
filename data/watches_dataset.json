@@ -1,0 +1,334 @@
+[
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "116610LV",
+      "apodo": "Hulk",
+      "año": 2018,
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "como nuevo",
+      "tiene_caja": true,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": true,
+      "pulido": false,
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 15500,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "España",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "16800",
+      "apodo": "None",
+      "año": 1983,
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "usado bueno",
+      "tiene_caja": true,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": null,
+      "pulido": false,
+      "ultimo_servicio": "dic 2025"
+    },
+    "precio": {
+      "precio_anuncio": 8450,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Italia",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "16610",
+      "apodo": "None",
+      "año": 1992,
+      "tamaño_mm": null
+    },
+    "estado": {
+      "estado_global": "usado bueno",
+      "tiene_caja": false,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": null,
+      "pulido": "never polished",
+      "ultimo_servicio": null
+    },
+    "precio": {
+      "precio_anuncio": 7450,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Italia",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "16618",
+      "apodo": null,
+      "año": 1998,
+      "tamaño_mm": 40,
+      "material": "oro"
+    },
+    "estado": {
+      "estado_global": "muy bueno",
+      "tiene_caja": true,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": false,
+      "pulido": false,
+      "ultimo_servicio": "dic 2025"
+    },
+    "precio": {
+      "precio_anuncio": 24500,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Barcelona",
+      "tipo_vendedor": null
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "116610LN",
+      "año": 2011,
+      "tamaño_mm": null,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "muy bueno",
+      "tiene_caja": false,
+      "tiene_papeles": true,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": null,
+      "pulido": null,
+      "ultimo_servicio": null
+    },
+    "precio": {
+      "precio_anuncio": 11900,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Italia",
+      "type_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "16610LV",
+      "apodo": "Kermit",
+      "año": 2007,
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "como nuevo",
+      "tiene_caja": true,
+      "tiene_papeles": true,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": false,
+      "pulido": false,
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 66032,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Miami",
+      "tipo_vendedor": "comerciante profesional"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "116610LV",
+      "apodo": "Hulk",
+      "año": 2019,
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "nuevo",
+      "tiene_caja": true,
+      "tiene_papeles": true,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": false,
+      "pulido": false,
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 20990,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Alemania",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "116610LV",
+      "apodo": "Hulk",
+      "año": 2020,
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "muy bueno",
+      "tiene_caja": true,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": true,
+      "pulido": "polishado",
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 17604,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "USA",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "116610LN",
+      "apodo": null,
+      "año": 2013,
+      "tamaño_mm": null,
+      "material": null
+    },
+    "estado": {
+      "estado_global": "muy bueno",
+      "tiene_caja": true,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": false,
+      "pulido": false,
+      "ultimo_servicio": "abril 2025"
+    },
+    "precio": {
+      "precio_anuncio": 11790,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Alemania",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "16800",
+      "apodo": null,
+      "año": 1986,
+      "tamaño_mm": null,
+      "material": null
+    },
+    "estado": {
+      "estado_global": "bueno",
+      "tiene_caja": true,
+      "tiene_papeles": true,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": false,
+      "pulido": null,
+      "ultimo_servicio": null
+    },
+    "precio": {
+      "precio_anuncio": 9690,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Alemania",
+      "tipo_vendedor": "comerciante profesional"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "16613",
+      "apodo": "bicolor",
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "usado bueno",
+      "tiene_caja": true,
+      "tiene_papeles": null,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": null,
+      "Pulido": false,
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 10200,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "España",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "16610LV",
+      "apodo": "Kermit",
+      "año": 2005,
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "bueno",
+      "tiene_caja": false,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": null,
+      "pulido": null,
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 11500,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Italia",
+      "tipo_vendedor": "vendedor privado"
+    }
+  },
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "116610LN",
+      "apodo": "Holland"
+    },
+    "estado": {
+      "estado_global": "muy bueno",
+      "tiene_caja": true,
+      "tiene_papeles": true,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": false,
+      "pulido": false,
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 10995,
+      "moneda": "EUR",
+      "ubicacion_vendedor": "Holanda",
+      "type_vendedor": "vendedor privado"
+    }
+  }
+]

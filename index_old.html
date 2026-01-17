@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HOROLOGY.IA - Valoración de Relojes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0A1929 0%, #1A237E 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            font-size: 32px;
+            color: #0A1929;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            color: #50C878;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+        
+        .tagline {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: #50C878;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: auto;
+        }
+        
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #50C878 0%, #3BA05F 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(80, 200, 120, 0.4);
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .result.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .price {
+            font-size: 48px;
+            font-weight: bold;
+            color: #D4AF37;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .range {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        
+        .error {
+            background: #fee;
+            color: #c33;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .error.show {
+            display: block;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: white;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>⌚ HOROLOGY<span class="subtitle">.IA</span></h1>
+            <p class="tagline">AI-Powered Watch Pricing</p>
+        </div>
+        
+        <form id="watchForm">
+            <div class="form-group">
+                <label>Referencia</label>
+                <input type="text" id="referencia" placeholder="ej: 116610LV, 16610, 16800..." required>
+            </div>
+            
+            <div class="form-group">
+                <label>Año</label>
+                <input type="number" id="año" min="1950" max="2026" placeholder="ej: 2018" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Estado</label>
+                <select id="estado" required>
+                    <option value="">Selecciona...</option>
+                    <option value="como nuevo">Como nuevo</option>
+                    <option value="muy bueno">Muy bueno</option>
+                    <option value="bueno">Bueno</option>
+                    <option value="aceptable">Aceptable</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Material</label>
+                <select id="material">
+                    <option value="acero">Acero</option>
+                    <option value="oro">Oro</option>
+                    <option value="bicolor">Bicolor</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Accesorios</label>
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="caja">
+                        <label for="caja" style="margin: 0;">Caja</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="papeles">
+                        <label for="papeles" style="margin: 0;">Papeles</label>
+                    </div>
+                </div>
+            </div>
+            
+            <button type="submit" id="submitBtn">🔮 Valorar Reloj</button>
+        </form>
+        
+        <div class="error" id="error"></div>
+        
+        <div class="result" id="result">
+            <h3 style="text-align: center; margin-bottom: 10px;">💎 Valoración</h3>
+            <div class="price" id="price">-</div>
+            <div class="range" id="range">-</div>
+            <p style="text-align: center; color: #999; font-size: 12px;">
+                Basado en 13 relojes analizados
+            </p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        <p>HOROLOGY.IA v1.0.0-MVP © 2026</p>
+        <p style="margin-top: 5px; opacity: 0.7;">Powered by AI + Machine Learning</p>
+    </div>
+    
+    <script>
+        const API_URL = '';
+;
+        
+        document.getElementById('watchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+            
+            // Reset
+            result.classList.remove('show');
+            error.classList.remove('show');
+            btn.disabled = true;
+            btn.textContent = '⏳ Valorando...';
+            
+            try {
+                const data = {
+                    referencia: document.getElementById('referencia').value,
+                    año: parseInt(document.getElementById('año').value),
+                    tiene_caja: document.getElementById('caja').checked,
+                    tiene_papeles: document.getElementById('papeles').checked,
+                    estado: document.getElementById('estado').value,
+                    material: document.getElementById('material').value
+                };
+                
+                const response = await fetch(`${API_URL}/valorar`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                const json = await response.json();
+                
+                if (json.success) {
+                    document.getElementById('price').textContent = 
+                        new Intl.NumberFormat('es-ES', { 
+                            style: 'currency', 
+                            currency: 'EUR',
+                            maximumFractionDigits: 0
+                        }).format(json.precio_estimado);
+                    
+                    document.getElementById('range').textContent = 
+                        `Rango: ${new Intl.NumberFormat('es-ES', { 
+                            style: 'currency', 
+                            currency: 'EUR',
+                            maximumFractionDigits: 0
+                        }).format(json.rango_minimo)} - ${new Intl.NumberFormat('es-ES', { 
+                            style: 'currency', 
+                            currency: 'EUR',
+                            maximumFractionDigits: 0
+                        }).format(json.rango_maximo)}`;
+                    
+                    result.classList.add('show');
+                } else {
+                    throw new Error(json.error || 'Error desconocido');
+                }
+            } catch (err) {
+                error.textContent = '❌ Error: ' + err.message;
+                error.classList.add('show');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔮 Valorar Reloj';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+marca,modelo,ref,apodo,año,material,caja,papeles,estado,rayaduras,pulido,precio
+Rolex,Submariner Date,116610LV,Hulk,2018,acero,True,False,como nuevo,True,False,15500
+Rolex,Submariner Date,16800,None,1983,acero,True,False,usado bueno,,False,8450
+Rolex,Submariner Date,16610,None,1992,,False,False,usado bueno,,never polished,7450
+Rolex,Submariner Date,16618,,1998,oro,True,False,muy bueno,False,False,24500
+Rolex,Submariner Date,116610LN,,2011,acero,False,True,muy bueno,,,11900
+Rolex,Submariner Date,16610LV,Kermit,2007,acero,True,True,como nuevo,False,False,66032
+Rolex,Submariner Date,116610LV,Hulk,2019,acero,True,True,nuevo,False,False,20990
+Rolex,Submariner Date,116610LV,Hulk,2020,acero,True,False,muy bueno,True,polishado,17604
+Rolex,Submariner Date,116610LN,,2013,,True,False,muy bueno,False,False,11790
+Rolex,Submariner Date,16800,,1986,,True,True,bueno,False,,9690
+Rolex,Submariner Date,16613,bicolor,,acero,True,,usado bueno,,,10200
+Rolex,Submariner Date,16610LV,Kermit,2005,acero,False,False,bueno,,,11500
+Rolex,Submariner Date,116610LN,Holland,,,True,True,muy bueno,False,False,10995

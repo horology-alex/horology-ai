@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>HOROLOGY.IA Terminal</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:#020617;
+  color:#e5e7eb;
+  min-height:100vh;
+  padding:24px;
+}
+.container{
+  max-width:1250px;
+  margin:0 auto;
+  background:#020617;
+}
+.header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+.logo{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.logo-title{
+  font-size:28px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+.logo-accent{color:#22c55e}
+.tagline{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:#9ca3af;
+}
+.badge{
+  font-size:11px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#022c22;
+  color:#6ee7b7;
+  border:1px solid #065f46;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.badge:hover{
+  background:#065f46;
+  color:#d1fae5;
+}
+
+.ticker{
+  margin-top:6px;
+  font-size:11px;
+  color:#9ca3af;
+  font-family:"SF Mono","Menlo",monospace;
+}
+.grid-main{
+  display:grid;
+  grid-template-columns:330px minmax(0,1fr);
+  gap:18px;
+  transition:all 0.3s ease;
+}
+.grid-main.presentation-mode{
+  grid-template-columns:0 minmax(0,1fr);
+}
+.grid-main.presentation-mode .panel:first-child{
+  opacity:0;
+  pointer-events:none;
+  width:0;
+  padding:0;
+  overflow:hidden;
+}
+
+.panel{
+  background:radial-gradient(circle at top left,#020617 0,#020617 40%,#0b1120 100%);
+  border-radius:12px;
+  border:1px solid #1f2937;
+  padding:16px 18px;
+  box-shadow:0 18px 35px rgba(0,0,0,0.7);
+}
+.panel h3{
+  font-size:13px;
+  font-weight:600;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  color:#9ca3af;
+  margin-bottom:12px;
+}
+.form-group{margin-bottom:14px;font-size:13px}
+label{display:block;margin-bottom:4px;color:#9ca3af}
+input,select{
+  width:100%;
+  padding:8px 10px;
+  border-radius:6px;
+  border:1px solid #374151;
+  background:#020617;
+  color:#e5e7eb;
+  font-size:13px;
+}
+input:focus,select:focus{
+  outline:none;
+  border-color:#22c55e;
+  box-shadow:0 0 0 1px #22c55e55;
+}
+.checkbox-row{
+  display:flex;
+  gap:16px;
+  font-size:12px;
+  color:#e5e7eb;
+}
+button{
+  width:100%;
+  margin-top:8px;
+  padding:10px;
+  border-radius:6px;
+  border:none;
+  background:linear-gradient(90deg,#22c55e,#16a34a);
+  color:#01100a;
+  font-weight:700;
+  font-size:13px;
+  cursor:pointer;
+  box-shadow:0 14px 30px rgba(16,185,129,0.35);
+}
+button:hover{filter:brightness(1.05)}
+
+.resultado{
+  display:none;
+  margin-top:4px;
+  opacity:0;
+  animation:fadeIn 0.5s ease forwards;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+.top-strip{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  margin-bottom:10px;
+}
+.price-block{font-family:"SF Mono","Menlo",monospace;}
+.price-label{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.16em;
+  color:#9ca3af;
+}
+.price-value{
+  font-size:32px;
+  font-weight:700;
+  color:#facc15;
+}
+.range-text{
+  font-size:12px;
+  color:#9ca3af;
+  text-align:right;
+}
+.stats-row{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:10px;
+  margin-top:10px;
+}
+.stat{
+  padding:8px 10px;
+  border-radius:8px;
+  background:rgba(15,23,42,0.9);
+  border:1px solid #1f2937;
+}
+.stat-label{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.14em;
+  color:#6b7280;
+}
+.stat-value{
+  margin-top:3px;
+  font-size:14px;
+  font-family:"SF Mono","Menlo",monospace;
+}
+.stat-value.green{color:#4ade80}
+.stat-value.red{color:#f97373}
+
+.subgrid{
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);
+  gap:14px;
+  margin-top:14px;
+}
+.box{
+  background:rgba(15,23,42,0.9);
+  border-radius:10px;
+  border:1px solid #1f2937;
+  padding:10px 12px;
+}
+.box h4{
+  font-size:12px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:#9ca3af;
+  margin-bottom:8px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px;
+}
+th,td{
+  padding:4px 3px;
+  text-align:right;
+}
+th{
+  color:#9ca3af;
+  border-bottom:1px solid #1f2937;
+  font-weight:500;
+}
+td:first-child,th:first-child{text-align:left}
+tr:nth-child(even){background:rgba(15,23,42,0.6);}
+#explicacion{
+  margin-top:10px;
+  font-size:12px;
+  color:#9ca3af;
+  line-height:1.5;
+}
+
+/* Historial */
+.history-box{
+  margin-top:14px;
+}
+.history-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px;
+}
+.history-table th,.history-table td{
+  padding:3px 4px;
+}
+.history-table th{
+  color:#9ca3af;
+  border-bottom:1px solid #1f2937;
+  font-weight:500;
+}
+.history-table tr:nth-child(even){
+  background:rgba(15,23,42,0.7);
+}
+.history-title{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:#9ca3af;
+  margin-bottom:4px;
+}
+
+/* Escenarios */
+.scenario-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:11px;
+}
+.scenario-table th,.scenario-table td{
+  padding:3px 4px;
+}
+.scenario-table th{
+  color:#9ca3af;
+  border-bottom:1px solid #1f2937;
+}
+.scenario-table tr:nth-child(even){
+  background:rgba(15,23,42,0.7);
+}
+.model-info{
+  margin-top:14px;
+  padding:10px 12px;
+  background:rgba(15,23,42,0.7);
+  border-radius:8px;
+  border:1px solid #1f2937;
+  font-size:11px;
+  color:#9ca3af;
+  line-height:1.6;
+  display:none;
+}
+.model-info-title{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:#6b7280;
+  margin-bottom:6px;
+}
+
+@media(max-width:900px){
+  .grid-main{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <div>
+      <div class="logo">
+        <div class="logo-title">HOROLOGY<span class="logo-accent">.IA</span></div>
+        <div class="tagline">ROLEX PRICING TERMINAL</div>
+      </div>
+      <div class="ticker" id="ticker">MODEL: - | FAIR VALUE: - | PREMIUM: -</div>
+    </div>
+    <div class="badge" id="togglePresentation">PRESENTATION MODE</div>
+
+  </div>
+
+ <div class="grid-main" id="gridMain">
+
+    <!-- PANEL IZQUIERDO -->
+    <div class="panel">
+      <h3>WATCH INPUT</h3>
+      <form id="form">
+        <div class="form-group">
+          <label>Modelo</label>
+          <select id="modelo" required></select>
+        </div>
+        <div class="form-group">
+          <label>Año</label>
+          <input type="number" id="anio" min="1950" max="2026" required>
+        </div>
+        <div class="form-group">
+          <label>Estado</label>
+          <select id="estado" required>
+            <option value="Unworn">Como nuevo</option>
+            <option value="Very good">Muy bueno</option>
+            <option value="Good">Bueno</option>
+            <option value="Fair">Aceptable</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Material</label>
+          <select id="material" required>
+            <option value="Steel">Acero</option>
+            <option value="Yellow gold">Oro amarillo</option>
+            <option value="White gold">Oro blanco</option>
+            <option value="Rose gold">Oro rosa</option>
+            <option value="Gold/Steel">Bicolor</option>
+          </select>
+        </div>
+        <div class="form-group checkbox-row">
+          <label><input type="checkbox" id="caja"> Caja</label>
+          <label><input type="checkbox" id="papeles"> Papeles</label>
+        </div>
+        <button type="submit">RUN VALUATION</button>
+      </form>
+ <div class="model-info" id="modelInfo"></div>
+      <!-- HISTORIAL -->
+      <div class="history-box">
+        <div class="history-title">LAST VALUATIONS</div>
+        <table class="history-table" id="tabla_historial">
+          <thead>
+            <tr>
+              <th>Modelo</th>
+              <th>Año</th>
+              <th>Estado</th>
+              <th>FV (€)</th>
+              <th>% vs media</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PANEL DERECHO -->
+    <div class="panel">
+      <h3>VALUATION OUTPUT</h3>
+      <div id="resultado" class="resultado">
+        <div class="top-strip">
+          <div class="price-block">
+            <div class="price-label">FAIR VALUE</div>
+            <div class="price-value" id="precio"></div>
+          </div>
+          <div class="range-text" id="rango"></div>
+        </div>
+
+        <div class="stats-row">
+          <div class="stat">
+            <div class="stat-label">Precio base</div>
+            <div class="stat-value" id="base"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Media modelo</div>
+            <div class="stat-value" id="media_modelo"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Min - Max dataset</div>
+            <div class="stat-value" id="min_max"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Relojes analizados</div>
+            <div class="stat-value" id="relojes"></div>
+          </div>
+        </div>
+
+        <div class="stats-row" style="margin-top:10px">
+          <div class="stat">
+            <div class="stat-label">Δ vs media (€/%)</div>
+            <div class="stat-value" id="diff_media"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Percentil rango</div>
+            <div class="stat-value" id="percentil"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Elasticidad caja</div>
+            <div class="stat-value" id="elas_caja"></div>
+          </div>
+          <div class="stat">
+            <div class="stat-label">Elasticidad papeles</div>
+            <div class="stat-value" id="elas_papeles"></div>
+          </div>
+        </div>
+
+        <div class="subgrid">
+          <div class="box">
+            <h4>Price vs Year</h4>
+            <canvas id="ch1"></canvas>
+          </div>
+          <div class="box">
+            <h4>State Spread (€)</h4>
+            <table id="tabla_estados">
+              <thead>
+                <tr>
+                  <th>Estado</th>
+                  <th>Precio</th>
+                  <th>Δ vs actual</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="box" style="margin-top:12px">
+          <h4>Quick Scenarios</h4>
+          <table class="scenario-table" id="tabla_escenarios">
+            <thead>
+              <tr>
+                <th>Escenario</th>
+                <th>Precio</th>
+                <th>Δ €</th>
+                <th>Δ %</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+        <p id="explicacion"></p>
+      </div>
+
+      <div id="placeholder" style="font-size:12px;color:#6b7280;">
+        Introduce los datos del reloj en el panel izquierdo y ejecuta la valoración para ver el panel de métricas.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.onload = function () {
+  let chartAno = null;
+  let presentationMode = false;
+
+  // Datos de modelos icónicos
+  const modelData = {
+    'Rolex Submariner Date': 'Icono de buceo profesional. 300m resistencia al agua. Calibre 3135/3235. Producido desde 1969.',
+    'Rolex Daytona': 'Cronógrafo legendario. Taquímetro en bisel. Calibre 4130. Asociado con Paul Newman.',
+    'Rolex Datejust': 'Clásico dress watch. Primera referencia con fecha. Calibre 3135. Producido desde 1945.',
+    'Rolex GMT-Master II': 'Doble zona horaria. Bisel giratorio 24h. Calibre 3186/3285. Para pilotos y viajeros.'
+  };
+
+  // Listener para cambio de modelo
+  document.getElementById('modelo').addEventListener('change', function() {
+    const modelo = this.value;
+    const infoBox = document.getElementById('modelInfo');
+    if (modelData[modelo]) {
+      infoBox.style.display = 'block';
+      infoBox.innerHTML = `<div class="model-info-title">MODEL INFO</div>${modelData[modelo]}`;
+    } else {
+      infoBox.style.display = 'none';
+    }
+   });
+
+  // Toggle presentation mode
+  document.getElementById('togglePresentation').addEventListener('click', function() {
+    presentationMode = !presentationMode;
+    document.getElementById('gridMain').classList.toggle('presentation-mode', presentationMode);
+    this.textContent = presentationMode ? 'EXIT PRESENTATION' : 'PRESENTATION MODE';
+  });
+
+  async function cargarModelos() {
+    try {
+      const res = await fetch('/api/models');
+      const data = await res.json();
+      const select = document.getElementById('modelo');
+      select.innerHTML = '';
+      data.models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        select.appendChild(opt);
+      });
+      cargarHistorial();
+    } catch (err) {
+      console.error('Error cargando modelos', err);
+    }
+  }
+
+  function guardarEnHistorial(entry) {
+    const key = 'horology_history';
+    const existente = JSON.parse(localStorage.getItem(key) || '[]');
+    existente.unshift(entry);
+    const recortado = existente.slice(0, 8);
+    localStorage.setItem(key, JSON.stringify(recortado));
+  }
+
+  function cargarHistorial() {
+    const key = 'horology_history';
+    const existente = JSON.parse(localStorage.getItem(key) || '[]');
+    const tbody = document.querySelector('#tabla_historial tbody');
+    tbody.innerHTML = '';
+    existente.forEach(row => {
+      const tr = document.createElement('tr');
+      const diffSign = row.diff_media_pct >= 0 ? '+' : '−';
+      const diffText = `${diffSign}${Math.abs(row.diff_media_pct).toFixed(1)}%`;
+      tr.innerHTML = `
+        <td>${row.modelo}</td>
+        <td>${row.anio}</td>
+        <td>${row.estado}</td>
+        <td>${row.fv.toLocaleString('es-ES')}€</td>
+        <td>${diffText}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  document.getElementById('form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      modelo: document.getElementById('modelo').value,
+      año: parseInt(document.getElementById('anio').value),
+      estado: document.getElementById('estado').value,
+      material: document.getElementById('material').value,
+      caja: document.getElementById('caja').checked,
+      papeles: document.getElementById('papeles').checked,
+    };
+
+    const res = await fetch('/api/predict', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json();
+    if (!data.success) {
+      alert('Error: ' + data.error);
+      return;
+    }
+
+    document.getElementById('placeholder').style.display = 'none';
+    const resultado = document.getElementById('resultado');
+    resultado.style.display = 'block';
+resultado.style.animation = 'none';
+setTimeout(() => { resultado.style.animation = 'fadeIn 0.5s ease forwards'; }, 10);
+
+
+    // ticker
+    const diffMedia = data.precio_estimado - data.stats.precio_promedio_modelo;
+    const diffMediaPct = (diffMedia / data.stats.precio_promedio_modelo) * 100;
+    const signTicker = diffMediaPct >= 0 ? '+' : '−';
+    document.getElementById('ticker').textContent =
+      `MODEL: ${payload.modelo.toUpperCase()} | FAIR VALUE: ${data.precio_estimado.toLocaleString('es-ES')}€ | PREMIUM: ${signTicker}${Math.abs(diffMediaPct).toFixed(1)}% vs INDEX`;
+
+    // Animación contador para el precio
+const precioEl = document.getElementById('precio');
+const precioFinal = data.precio_estimado;
+let precioActual = 0;
+const duracion = 1000; // 1 segundo
+const pasos = 30;
+const incremento = precioFinal / pasos;
+const intervalo = duracion / pasos;
+
+const timer = setInterval(() => {
+  precioActual += incremento;
+  if (precioActual >= precioFinal) {
+    precioActual = precioFinal;
+    clearInterval(timer);
+  }
+  precioEl.textContent = Math.round(precioActual).toLocaleString('es-ES') + ' €';
+}, intervalo);
+
+
+    document.getElementById('rango').textContent =
+      `Rango modelo: ${data.rango.min.toLocaleString('es-ES')}€ – ${data.rango.max.toLocaleString('es-ES')}€`;
+
+    document.getElementById('base').textContent =
+      data.precio_base.toLocaleString('es-ES') + ' €';
+
+    document.getElementById('media_modelo').textContent =
+      data.stats.precio_promedio_modelo.toLocaleString('es-ES') + ' €';
+
+    document.getElementById('min_max').textContent =
+      `${data.rango.min.toLocaleString('es-ES')}€ / ${data.rango.max.toLocaleString('es-ES')}€`;
+
+    document.getElementById('relojes').textContent =
+      data.stats.relojes_analizados.toLocaleString('es-ES');
+
+    // Δ vs media y percentil
+    const diffAbs = Math.abs(diffMedia);
+    const sign = diffMedia >= 0 ? '+' : '−';
+    const diffPct = Math.abs(diffMediaPct);
+    const diffEl = document.getElementById('diff_media');
+    diffEl.textContent =
+      `${sign}${diffAbs.toLocaleString('es-ES')} € (${sign}${diffPct.toFixed(1)}%)`;
+    diffEl.className = 'stat-value ' + (diffMedia >= 0 ? 'green' : 'red');
+
+    const rango = data.rango.max - data.rango.min;
+    let pct = 0;
+    if (rango > 0) {
+      pct = ((data.precio_estimado - data.rango.min) / rango) * 100;
+      pct = Math.max(0, Math.min(100, pct));
+    }
+    document.getElementById('percentil').textContent =
+      `P${pct.toFixed(0)}`;
+
+    // elasticidades
+    const base = data.precio_base || data.precio_estimado;
+    const elasCaja = base ? (data.analisis_impacto.caja / base) * 100 : 0;
+    const elasPap = base ? (data.analisis_impacto.papeles / base) * 100 : 0;
+    document.getElementById('elas_caja').textContent =
+      (isNaN(elasCaja) ? 0 : elasCaja).toFixed(1) + ' %';
+    document.getElementById('elas_papeles').textContent =
+      (isNaN(elasPap) ? 0 : elasPap).toFixed(1) + ' %';
+
+    // tabla estados
+    const tbodyEstados = document.querySelector('#tabla_estados tbody');
+    tbodyEstados.innerHTML = '';
+    data.graficos.por_estado.forEach(row => {
+      const tr = document.createElement('tr');
+      const diff = row.precio - data.precio_estimado;
+      const s = diff >= 0 ? '+' : '−';
+      tr.innerHTML = `
+        <td>${row.estado}</td>
+        <td>${row.precio.toLocaleString('es-ES')}€</td>
+        <td>${s}${Math.abs(diff).toLocaleString('es-ES')}€</td>
+      `;
+      tbodyEstados.appendChild(tr);
+    });
+
+    // escenarios rápidos (se calculan con el mismo modelo en frontend)
+const tbodyEsc = document.querySelector('#tabla_escenarios tbody');
+tbodyEsc.innerHTML = '';
+
+function calcularPrecioEscenario(nombre, nuevoEstado, nuevaCaja, nuevosPapeles) {
+  // tomamos los resultados de /api/predict como base
+  // y reutilizamos los datos de graficos.por_estado
+  let precioEsc = data.precio_estimado;
+
+  // cambiar estado usando los precios por estado ya calculados
+  if (nuevoEstado) {
+    const filaEstado = data.graficos.por_estado.find(e => e.estado === nuevoEstado);
+    if (filaEstado) {
+      precioEsc = filaEstado.precio;
+    }
+  }
+
+  // ajustar caja y papeles respecto al caso actual
+  let ajusteExtras = 0;
+  if (nuevaCaja !== undefined) {
+    const deltaCaja = data.analisis_impacto.caja || 0;
+    const tieneCajaActual = payload.caja;
+    if (nuevaCaja && !tieneCajaActual) ajusteExtras += deltaCaja;
+    if (!nuevaCaja && tieneCajaActual) ajusteExtras -= deltaCaja;
+  }
+  if (nuevosPapeles !== undefined) {
+    const deltaPap = data.analisis_impacto.papeles || 0;
+    const tienePapActual = payload.papeles;
+    if (nuevosPapeles && !tienePapActual) ajusteExtras += deltaPap;
+    if (!nuevosPapeles && tienePapActual) ajusteExtras -= deltaPap;
+  }
+
+  const precioFinal = precioEsc + ajusteExtras;
+  const delta = precioFinal - data.precio_estimado;
+  const deltaPct = (delta / data.precio_estimado) * 100;
+
+  const signo = delta >= 0 ? '+' : '−';
+  const signoPct = deltaPct >= 0 ? '+' : '−';
+
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td>${nombre}</td>
+    <td>${precioFinal.toLocaleString('es-ES')}€</td>
+    <td>${signo}${Math.abs(delta).toLocaleString('es-ES')}€</td>
+    <td>${signoPct}${Math.abs(deltaPct).toFixed(1)}%</td>
+  `;
+  tbodyEsc.appendChild(tr);
+}
+
+// escenarios que mostramos
+calcularPrecioEscenario('Downgrade estado', 'Good');
+calcularPrecioEscenario('Upgrade estado', 'Unworn');
+calcularPrecioEscenario('Sin caja', null, false, undefined);
+calcularPrecioEscenario('Sin papeles', null, undefined, false);
+
+
+    // explicación
+    let frase;
+    const media = data.stats.precio_promedio_modelo;
+    if (Math.abs(diffMedia) < media * 0.05) {
+      frase = 'El reloj cotiza muy cerca del promedio histórico del modelo: movimiento alineado con mercado secundario.';
+    } else if (diffMedia > 0) {
+      frase = 'La valoración se sitúa por encima de la media, indicando una unidad por encima del estándar (estado, configuración o extras atractivos).';
+    } else {
+      frase = 'La valoración se sitúa por debajo de la media, posiblemente por desgaste, antigüedad o ausencia de caja/papeles.';
+    }
+    document.getElementById('explicacion').textContent = frase;
+
+    // gráfico por año
+    const labelsAno = data.graficos.por_año.map(p => p.año);
+    const valoresAno = data.graficos.por_año.map(p => p.precio);
+
+    if (chartAno) chartAno.destroy();
+
+    const ctx1 = document.getElementById('ch1').getContext('2d');
+    chartAno = new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: labelsAno,
+        datasets: [{
+          label:'Fair value (€)',
+          data: valoresAno,
+          borderColor:'#22c55e',
+          backgroundColor:'rgba(34,197,94,0.12)',
+          borderWidth:2,
+          fill:true,
+          tension:0.35,
+          pointRadius:3,
+          pointBackgroundColor:'#22c55e'
+        }]
+      },
+      options:{
+        responsive:true,
+        plugins:{
+          legend:{display:false},
+          tooltip:{enabled:true}
+        },
+        scales:{
+          x:{
+            title:{display:true,text:'Año'},
+            grid:{color:'rgba(31,41,55,0.6)'}
+          },
+          y:{
+            title:{display:true,text:'Precio (€)'},
+            grid:{color:'rgba(31,41,55,0.6)'}
+          }
+        }
+      }
+    });
+
+    // guardar en historial
+    guardarEnHistorial({
+      modelo: payload.modelo,
+      anio: payload.año,
+      estado: payload.estado,
+      fv: data.precio_estimado,
+      diff_media_pct: diffMediaPct
+    });
+    cargarHistorial();
+  });
+
+  cargarModelos();
+};
+</script>
+</body>
+</html> 

@@ -1,0 +1,10 @@
+venv/
+__pycache__/
+*.pyc
+data/rolex_dataset.csv
+.DS_Store
+.env
+*.log
+data/pricing_model_full.pkl
+data/rolex_scaper_clean.csv
+data/rolex_scaper_clean.csv

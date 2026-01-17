@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Test</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<h1>Test Chart</h1>
+anvas id="myChart"></canvas>
+<script>
+new Chart(document.getElementById('myChart'), {
+  type: 'bar',
+  data: {
+    labels: ['2015', '2020', '2025'],
+    datasets: [{label: 'Precio', data: [30000, 35000, 37000], backgroundColor: '#4CAF50'}]
+  }
+});
+</script>
+</body>
+</html>

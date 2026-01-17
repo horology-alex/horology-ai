@@ -1,0 +1,28 @@
+[
+  {
+    "identidad": {
+      "marca": "Rolex",
+      "modelo": "Submariner Date",
+      "referencia": "116610LV",
+      "apodo": null,
+      "año": 2018,
+      "tamaño_mm": 40,
+      "material": "acero"
+    },
+    "estado": {
+      "estado_global": "como nuevo",
+      "tiene_caja": true,
+      "tiene_papeles": false,
+      "faltan_eslabones": null,
+      "tiene_rayaduras_visibles": true,
+      "pulido": false,
+      "ultimo_servicio": "no se indica"
+    },
+    "precio": {
+      "precio_anuncio": 15000,
+      "moneda": "EUR",
+      "ubicacion_vendedor": null,
+      "tipo_vendedor": null
+    }
+  }
+]
