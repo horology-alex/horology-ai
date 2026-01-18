@@ -337,6 +337,38 @@ tr:nth-child(even){background:rgba(15,23,42,0.6);}
   color:#f97373 !important;
 }
 
+/* Tooltips */
+.tooltip-icon{
+  display:inline-block;
+  margin-left:4px;
+  width:12px;
+  height:12px;
+  background:#374151;
+  color:#9ca3af;
+  border-radius:50%;
+  font-size:9px;
+  line-height:12px;
+  text-align:center;
+  cursor:help;
+  position:relative;
+}
+.tooltip-icon:hover::after{
+  content:attr(data-tip);
+  position:absolute;
+  bottom:calc(100% + 5px);
+  left:50%;
+  transform:translateX(-50%);
+  background:#1f2937;
+  color:#e5e7eb;
+  padding:6px 10px;
+  border-radius:6px;
+  font-size:11px;
+  white-space:nowrap;
+  z-index:1000;
+  border:1px solid #374151;
+  box-shadow:0 4px 12px rgba(0,0,0,0.5);
+}
+
 @media(max-width:900px){
   .grid-main{grid-template-columns:1fr}
 }
@@ -434,13 +466,17 @@ tr:nth-child(even){background:rgba(15,23,42,0.6);}
   + ADD TO COMPARISON
 </button>
 
+<button id="btnCopy" style="width:auto;padding:8px 16px;margin:10px 0 10px 10px;font-size:12px;background:#2563eb">
+  📋 COPY RESULTS
+</button>
+
         <div class="stats-row">
           <div class="stat">
-            <div class="stat-label">Precio base</div>
+            <div class="stat-label">Precio base<span class="tooltip-icon" data-tip="Precio sin caja ni papeles originales">?</span></div>
             <div class="stat-value" id="base"></div>
           </div>
           <div class="stat">
-            <div class="stat-label">Media modelo</div>
+            <div class="stat-label">Media modelo<span class="tooltip-icon" data-tip="Precio promedio histórico de este modelo">?</span></div>
             <div class="stat-value" id="media_modelo"></div>
           </div>
           <div class="stat">
@@ -448,26 +484,22 @@ tr:nth-child(even){background:rgba(15,23,42,0.6);}
             <div class="stat-value" id="min_max"></div>
           </div>
           <div class="stat">
-            <div class="stat-label">Relojes analizados</div>
+            <div class="stat-label">Relojes analizados<span class="tooltip-icon" data-tip="Número de relojes de este modelo en el dataset">?</span></div>
             <div class="stat-value" id="relojes"></div>
           </div>
         </div>
 
         <div class="stats-row" style="margin-top:10px">
           <div class="stat">
-            <div class="stat-label">Δ vs media (€/%)</div>
+            <div class="stat-label">Δ vs media (€/%)<span class="tooltip-icon" data-tip="Diferencia entre fair value y precio promedio del modelo">?</span></div>
             <div class="stat-value" id="diff_media"></div>
           </div>
           <div class="stat">
-            <div class="stat-label">Percentil rango</div>
-            <div class="stat-value" id="percentil"></div>
-          </div>
-          <div class="stat">
-            <div class="stat-label">Elasticidad caja</div>
+            <div class="stat-label">Elasticidad caja<span class="tooltip-icon" data-tip="Impacto porcentual de tener caja original">?</span></div>
             <div class="stat-value" id="elas_caja"></div>
           </div>
           <div class="stat">
-            <div class="stat-label">Elasticidad papeles</div>
+            <div class="stat-label">Elasticidad papeles<span class="tooltip-icon" data-tip="Impacto porcentual de tener documentación original">?</span></div>
             <div class="stat-value" id="elas_papeles"></div>
           </div>
         </div>
@@ -528,12 +560,23 @@ window.onload = function () {
   let todosModelos = [];  // Mover aquí
 
   // Datos de modelos icónicos
-  const modelData = {
-    'Rolex Submariner Date': 'Icono de buceo profesional. 300m resistencia al agua. Calibre 3135/3235. Producido desde 1969.',
-    'Rolex Daytona': 'Cronógrafo legendario. Taquímetro en bisel. Calibre 4130. Asociado con Paul Newman.',
-    'Rolex Datejust': 'Clásico dress watch. Primera referencia con fecha. Calibre 3135. Producido desde 1945.',
-    'Rolex GMT-Master II': 'Doble zona horaria. Bisel giratorio 24h. Calibre 3186/3285. Para pilotos y viajeros.'
+    const modelData = {
+    'Rolex Submariner Date': '🌊 Icono de buceo profesional<br>• Resistencia: 300m<br>• Calibre: 3135/3235<br>• Diámetro: 40-41mm<br>• Lanzamiento: 1969<br>• Material bisel: Cerachrom cerámico',
+    'Rolex Submariner': '🌊 Versión sin fecha del icónico diver<br>• Resistencia: 300m<br>• Calibre: 3130/3230<br>• Diámetro: 40-41mm<br>• Lanzamiento: 1953<br>• Ref. más buscada: 114060, 124060',
+    'Rolex Daytona': '🏁 Cronógrafo legendario de motorsport<br>• Calibre: 4130<br>• Diámetro: 40mm<br>• Lanzamiento: 1963<br>• Taquímetro en bisel<br>• Asociado con Paul Newman',
+    'Rolex GMT-Master II': '✈️ Icono de pilotos y viajeros<br>• Doble zona horaria independiente<br>• Calibre: 3186/3285<br>• Diámetro: 40mm<br>• Bisel giratorio 24h<br>• Lanzamiento GMT-Master: 1954',
+    'Rolex Datejust': '👔 El dress watch definitivo<br>• Primera referencia con fecha (1945)<br>• Calibre: 3135/3235<br>• Diámetros: 31, 36, 41mm<br>• Bisel acanalado icónico<br>• Más versátil de la marca',
+    'Rolex Day-Date': '📅 El reloj de los presidentes<br>• Día completo + fecha<br>• Solo en metales preciosos<br>• Calibre: 3255<br>• Diámetro: 36, 40mm<br>• Lanzamiento: 1956',
+    'Rolex Explorer': '⛰️ Conquistador del Everest<br>• Calibre: 3132/3230<br>• Diámetro: 36, 39mm<br>• Lanzamiento: 1953<br>• Esfera negra 3-6-9<br>• Máxima legibilidad',
+    'Rolex Oyster Perpetual': '⚙️ La esencia pura de Rolex<br>• Sin fecha ni complicaciones<br>• Calibre: 3230<br>• Diámetros: 28-41mm<br>• Múltiples colores disponibles<br>• Entrada perfecta a la marca',
+    'Rolex Sea-Dweller': '🔱 El hermano extremo del Submariner<br>• Resistencia: 1220m (4000ft)<br>• Válvula de helio<br>• Calibre: 3235<br>• Diámetro: 43mm<br>• Para buceo profesional',
+    'Rolex Yacht-Master': '⛵ Elegancia náutica<br>• Bisel rotativo 60 min<br>• Calibre: 3135/3235<br>• Diámetros: 37, 40, 42mm<br>• Lanzamiento: 1992<br>• Material bisel: Cerachrom o platino',
+    'Rolex Cellini': '🎩 La línea dress clásica<br>• Sin Oyster case<br>• Movimiento manual o automático<br>• Inspiración Art Deco<br>• Diámetros: 39mm típico<br>• Elegancia atemporal',
+    'Rolex Milgauss': '⚡ El reloj antimagnético<br>• Resistencia: 1,000 gauss<br>• Calibre: 3131<br>• Diámetro: 40mm<br>• Aguja naranja rayo<br>• Para científicos e ingenieros',
+    'Rolex Sky-Dweller': '🌍 La complicación más compleja<br>• Calendario anual<br>• Doble zona horaria<br>• Calibre: 9001<br>• Diámetro: 42mm<br>• Lanzamiento: 2012',
+    'Rolex Air-King': '🛩️ Tributo a la aviación<br>• Calibre: 3230<br>• Diámetro: 40mm<br>• Esfera negra distintiva<br>• Escala de minutos destacada<br>• Precio de entrada atractivo'
   };
+
 
   // Listener para cambio de modelo
   document.getElementById('modelo').addEventListener('change', function() {
@@ -611,12 +654,12 @@ window.onload = function () {
       tbody.appendChild(tr);
     });
   }
-     function mostrarComparacion(watch1, watch2) {
+      function mostrarComparacion(watch1, watch2) {
     const resultado = document.getElementById('resultado');
     
     const precioMasAlto = Math.max(watch1.precio, watch2.precio);
     
-    // Mostrar ambos precios en el header
+    // Mostrar ambos precios en el header con info de extras
     const precioEl = document.getElementById('precio');
     precioEl.style.display = 'flex';
     precioEl.style.justifyContent = 'center';
@@ -624,48 +667,73 @@ window.onload = function () {
     precioEl.style.gap = '40px';
     precioEl.innerHTML = `
       <div style="text-align:center">
-        <div style="font-size:12px;color:#9ca3af;margin-bottom:5px">${watch1.modelo}<br>${watch1.año}</div>
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:3px">${watch1.modelo} ${watch1.año}</div>
+        <div style="font-size:10px;color:#6b7280;margin-bottom:5px">${watch1.estado} · ${watch1.material}</div>
         <span style="font-size:32px;font-weight:700;color:${watch1.precio === precioMasAlto ? '#4ade80' : '#f97373'}">${watch1.precio.toLocaleString('es-ES')}€</span>
+        <div style="font-size:10px;color:#9ca3af;margin-top:3px">${watch1.caja ? '✓' : '✗'} Caja · ${watch1.papeles ? '✓' : '✗'} Papeles</div>
       </div>
       <div style="color:#6b7280;font-size:20px">VS</div>
       <div style="text-align:center">
-        <div style="font-size:12px;color:#9ca3af;margin-bottom:5px">${watch2.modelo}<br>${watch2.año}</div>
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:3px">${watch2.modelo} ${watch2.año}</div>
+        <div style="font-size:10px;color:#6b7280;margin-bottom:5px">${watch2.estado} · ${watch2.material}</div>
         <span style="font-size:32px;font-weight:700;color:${watch2.precio === precioMasAlto ? '#4ade80' : '#f97373'}">${watch2.precio.toLocaleString('es-ES')}€</span>
+        <div style="font-size:10px;color:#9ca3af;margin-top:3px">${watch2.caja ? '✓' : '✗'} Caja · ${watch2.papeles ? '✓' : '✗'} Papeles</div>
       </div>
     `;
     
-    // Actualizar rango
+    // Actualizar rango para mostrar modelos claramente
     document.getElementById('rango').innerHTML = `
-      <div style="font-size:11px">
-        <div>${watch1.material} vs ${watch2.material}</div>
-        <div>${watch1.estado} vs ${watch2.estado}</div>
+      <div style="font-size:10px;color:#9ca3af;text-align:right">
+        <div style="color:#4ade80">${watch1.modelo} ${watch1.año}</div>
+        <div style="color:#f97373">${watch2.modelo} ${watch2.año}</div>
       </div>
     `;
     
-    // Actualizar stats cards con comparación
+    // Stats primera fila - comparadas
     document.getElementById('base').innerHTML = `
-      <span style="color:${watch1.precio_base > watch2.precio_base ? '#4ade80' : '#f97373'}">${watch1.precio_base.toLocaleString('es-ES')}€</span>
-      <span style="color:#6b7280;font-size:0.7em"> vs </span>
-      <span style="color:${watch2.precio_base > watch1.precio_base ? '#4ade80' : '#f97373'}">${watch2.precio_base.toLocaleString('es-ES')}€</span>
+      <div style="font-size:11px;color:#4ade80">${watch1.precio_base.toLocaleString('es-ES')}€</div>
+      <div style="font-size:11px;color:#f97373">${watch2.precio_base.toLocaleString('es-ES')}€</div>
     `;
     
     document.getElementById('media_modelo').innerHTML = `
-      <span style="color:${watch1.stats.precio_promedio_modelo > watch2.stats.precio_promedio_modelo ? '#4ade80' : '#f97373'}">${watch1.stats.precio_promedio_modelo.toLocaleString('es-ES')}€</span>
-      <span style="color:#6b7280;font-size:0.7em"> vs </span>
-      <span style="color:${watch2.stats.precio_promedio_modelo > watch1.stats.precio_promedio_modelo ? '#4ade80' : '#f97373'}">${watch2.stats.precio_promedio_modelo.toLocaleString('es-ES')}€</span>
+      <div style="font-size:11px;color:#4ade80">${watch1.stats.precio_promedio_modelo.toLocaleString('es-ES')}€</div>
+      <div style="font-size:11px;color:#f97373">${watch2.stats.precio_promedio_modelo.toLocaleString('es-ES')}€</div>
     `;
     
-    document.getElementById('relojes').innerHTML = `${watch1.stats.relojes_analizados} vs ${watch2.stats.relojes_analizados}`;
+    document.getElementById('min_max').textContent = 'Ver individual';
+    
+    document.getElementById('relojes').innerHTML = `
+      <div style="font-size:11px;color:#4ade80">${watch1.stats.relojes_analizados}</div>
+      <div style="font-size:11px;color:#f97373">${watch2.stats.relojes_analizados}</div>
+    `;
+    
+    // Stats segunda fila - comparadas
+    const diff1 = watch1.precio - watch1.stats.precio_promedio_modelo;
+    const diff2 = watch2.precio - watch2.stats.precio_promedio_modelo;
+    const pct1 = (diff1 / watch1.stats.precio_promedio_modelo * 100).toFixed(1);
+    const pct2 = (diff2 / watch2.stats.precio_promedio_modelo * 100).toFixed(1);
+    
+    document.getElementById('diff_media').innerHTML = `
+      <div style="font-size:11px;color:#4ade80">${diff1 >= 0 ? '+' : ''}${diff1.toLocaleString('es-ES')}€ (${pct1}%)</div>
+      <div style="font-size:11px;color:#f97373">${diff2 >= 0 ? '+' : ''}${diff2.toLocaleString('es-ES')}€ (${pct2}%)</div>
+    `;
+
+    document.getElementById('elas_caja').innerHTML = `
+      <div style="font-size:11px;color:#4ade80">${watch1.caja ? 'Con caja' : 'Sin caja'}</div>
+      <div style="font-size:11px;color:#f97373">${watch2.caja ? 'Con caja' : 'Sin caja'}</div>
+    `;
+    
+    document.getElementById('elas_papeles').innerHTML = `
+      <div style="font-size:11px;color:#4ade80">${watch1.papeles ? 'Con papeles' : 'Sin papeles'}</div>
+      <div style="font-size:11px;color:#f97373">${watch2.papeles ? 'Con papeles' : 'Sin papeles'}</div>
+    `;
     
     // Cambiar botón a Clear
     const btnCompare = document.getElementById('btnCompare');
     btnCompare.textContent = '✕ CLEAR COMPARISON';
     btnCompare.style.background = '#dc2626';
     btnCompare.onclick = function() {
-      location.reload();
-    };
-    btnCompare.onclick = function() {
-      location.reload();
+    location.reload();
     };
     
     // Modificar gráfico para mostrar ambas líneas
@@ -709,6 +777,7 @@ window.onload = function () {
       }
     });
   }
+
 
   
 
@@ -799,16 +868,6 @@ if (!comparisonData) {
     diffEl.textContent =
       `${sign}${diffAbs.toLocaleString('es-ES')} € (${sign}${diffPct.toFixed(1)}%)`;
     diffEl.className = 'stat-value ' + (diffMedia >= 0 ? 'green' : 'red');
-
-    const rango = data.rango.max - data.rango.min;
-    let pct = 0;
-    if (rango > 0) {
-      pct = ((data.precio_estimado - data.rango.min) / rango) * 100;
-      pct = Math.max(0, Math.min(100, pct));
-    }
-    document.getElementById('percentil').textContent =
-      `P${pct.toFixed(0)}`;
-
     // elasticidades
     const base = data.precio_base || data.precio_estimado;
     const elasCaja = base ? (data.analisis_impacto.caja / base) * 100 : 0;
@@ -954,17 +1013,18 @@ calcularPrecioEscenario('Sin papeles', null, undefined, false);
         cargarHistorial();
     
     // Si hay comparación activa, mostrar lado a lado
-    if (comparisonData) {
+        if (comparisonData) {
       mostrarComparacion(comparisonData, {
         modelo: payload.modelo,
         año: payload.año,
         estado: payload.estado,
         material: payload.material,
+        caja: payload.caja,
+        papeles: payload.papeles,
         precio: data.precio_estimado,
         precio_base: data.precio_base,
         stats: data.stats,
         graficos_año: data.graficos['por_año']
-
       });
     }
   });
@@ -973,15 +1033,17 @@ calcularPrecioEscenario('Sin papeles', null, undefined, false);
 document.getElementById('btnCompare').addEventListener('click', function() {
   if (!lastValuationData) return;
   
-    comparisonData = {
+     comparisonData = {
     modelo: document.getElementById('modelo').value,
     año: parseInt(document.getElementById('anio').value),
     estado: document.getElementById('estado').value,
     material: document.getElementById('material').value,
+    caja: document.getElementById('caja').checked,
+    papeles: document.getElementById('papeles').checked,
     precio: lastValuationData.precio_estimado,
     precio_base: lastValuationData.precio_base,
     stats: lastValuationData.stats,
-       graficos_año: lastValuationData.graficos['por_año']  // AÑADIR ESTA LÍNEA
+    graficos_año: lastValuationData.graficos['por_año']
   };
 
   
@@ -993,7 +1055,44 @@ document.getElementById('btnCompare').addEventListener('click', function() {
   }, 2000);
 });
 
+// Listener del botón Copy
+document.getElementById('btnCopy').addEventListener('click', function() {
+  if (!lastValuationData) return;
+  
+  const modelo = document.getElementById('modelo').value;
+  const año = document.getElementById('anio').value;
+  const estado = document.getElementById('estado').value;
+  const material = document.getElementById('material').value;
+  const caja = document.getElementById('caja').checked ? '✓' : '✗';
+  const papeles = document.getElementById('papeles').checked ? '✓' : '✗';
+  
+  const texto = `
+🕐 HOROLOGY.IA - Valoración
 
+Modelo: ${modelo}
+Año: ${año}
+Estado: ${estado}
+Material: ${material}
+Caja: ${caja} | Papeles: ${papeles}
+
+💰 FAIR VALUE: ${lastValuationData.precio_estimado.toLocaleString('es-ES')}€
+
+📊 Stats:
+• Precio base: ${lastValuationData.precio_base.toLocaleString('es-ES')}€
+• Media modelo: ${lastValuationData.stats.precio_promedio_modelo.toLocaleString('es-ES')}€
+• Rango: ${lastValuationData.rango.min.toLocaleString('es-ES')}€ - ${lastValuationData.rango.max.toLocaleString('es-ES')}€
+• Relojes analizados: ${lastValuationData.stats.relojes_analizados}
+  `;
+  
+  navigator.clipboard.writeText(texto.trim()).then(() => {
+    this.textContent = '✓ COPIED!';
+    this.style.background = '#16a34a';
+    setTimeout(() => {
+      this.textContent = '📋 COPY RESULTS';
+      this.style.background = '#2563eb';
+    }, 2000);
+  });
+});
 
     cargarModelos();
 };
