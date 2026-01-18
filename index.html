@@ -297,10 +297,50 @@ tr:nth-child(even){background:rgba(15,23,42,0.6);}
   color:#6b7280;
   margin-bottom:6px;
 }
+.model-info-title{
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:#6b7280;
+  margin-bottom:6px;
+}
+
+/* Modo comparación */
+.comparison-better{
+  color:#4ade80 !important;
+}
+.comparison-worse{
+  color:#f97373 !important;
+}
+
+.comparison-divider{
+  width:1px;
+  background:#374151;
+}
+.comparison-col{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.comparison-header{
+  font-size:11px;
+  text-transform:uppercase;
+  letter-spacing:0.12em;
+  color:#9ca3af;
+  margin-bottom:8px;
+  text-align:center;
+}
+.comparison-better{
+  color:#4ade80 !important;
+}
+.comparison-worse{
+  color:#f97373 !important;
+}
 
 @media(max-width:900px){
   .grid-main{grid-template-columns:1fr}
 }
+
 </style>
 </head>
 <body>
@@ -323,10 +363,12 @@ tr:nth-child(even){background:rgba(15,23,42,0.6);}
     <div class="panel">
       <h3>WATCH INPUT</h3>
       <form id="form">
-        <div class="form-group">
-          <label>Modelo</label>
-          <select id="modelo" required></select>
-        </div>
+<div class="form-group">
+  <label>Modelo</label>
+  <input type="text" id="modeloSearch" placeholder="Buscar modelo..." style="margin-bottom:8px">
+  <select id="modelo" required></select>
+</div>
+
         <div class="form-group">
           <label>Año</label>
           <input type="number" id="anio" min="1950" max="2026" required>
@@ -386,6 +428,11 @@ tr:nth-child(even){background:rgba(15,23,42,0.6);}
           </div>
           <div class="range-text" id="rango"></div>
         </div>
+</div>
+
+<button id="btnCompare" style="width:auto;padding:8px 16px;margin:10px 0;font-size:12px">
+  + ADD TO COMPARISON
+</button>
 
         <div class="stats-row">
           <div class="stat">
@@ -472,8 +519,13 @@ tr:nth-child(even){background:rgba(15,23,42,0.6);}
 
 <script>
 window.onload = function () {
+  
+
   let chartAno = null;
   let presentationMode = false;
+  let comparisonData = null;
+  let lastValuationData = null;
+  let todosModelos = [];  // Mover aquí
 
   // Datos de modelos icónicos
   const modelData = {
@@ -506,19 +558,31 @@ window.onload = function () {
     try {
       const res = await fetch('/api/models');
       const data = await res.json();
-      const select = document.getElementById('modelo');
-      select.innerHTML = '';
-      data.models.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m;
-        opt.textContent = m;
-        select.appendChild(opt);
-      });
+      todosModelos = data.models;
+      mostrarModelos(todosModelos);
       cargarHistorial();
     } catch (err) {
       console.error('Error cargando modelos', err);
     }
   }
+
+  function mostrarModelos(modelos) {
+    const select = document.getElementById('modelo');
+    select.innerHTML = '';
+    modelos.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m;
+      opt.textContent = m;
+      select.appendChild(opt);
+    });
+  }
+
+  // Listener para búsqueda
+  document.getElementById('modeloSearch').addEventListener('input', function() {
+    const query = this.value.toLowerCase();
+    const filtrados = todosModelos.filter(m => m.toLowerCase().includes(query));
+    mostrarModelos(filtrados);
+  });
 
   function guardarEnHistorial(entry) {
     const key = 'horology_history';
@@ -547,6 +611,107 @@ window.onload = function () {
       tbody.appendChild(tr);
     });
   }
+     function mostrarComparacion(watch1, watch2) {
+    const resultado = document.getElementById('resultado');
+    
+    const precioMasAlto = Math.max(watch1.precio, watch2.precio);
+    
+    // Mostrar ambos precios en el header
+    const precioEl = document.getElementById('precio');
+    precioEl.style.display = 'flex';
+    precioEl.style.justifyContent = 'center';
+    precioEl.style.alignItems = 'center';
+    precioEl.style.gap = '40px';
+    precioEl.innerHTML = `
+      <div style="text-align:center">
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:5px">${watch1.modelo}<br>${watch1.año}</div>
+        <span style="font-size:32px;font-weight:700;color:${watch1.precio === precioMasAlto ? '#4ade80' : '#f97373'}">${watch1.precio.toLocaleString('es-ES')}€</span>
+      </div>
+      <div style="color:#6b7280;font-size:20px">VS</div>
+      <div style="text-align:center">
+        <div style="font-size:12px;color:#9ca3af;margin-bottom:5px">${watch2.modelo}<br>${watch2.año}</div>
+        <span style="font-size:32px;font-weight:700;color:${watch2.precio === precioMasAlto ? '#4ade80' : '#f97373'}">${watch2.precio.toLocaleString('es-ES')}€</span>
+      </div>
+    `;
+    
+    // Actualizar rango
+    document.getElementById('rango').innerHTML = `
+      <div style="font-size:11px">
+        <div>${watch1.material} vs ${watch2.material}</div>
+        <div>${watch1.estado} vs ${watch2.estado}</div>
+      </div>
+    `;
+    
+    // Actualizar stats cards con comparación
+    document.getElementById('base').innerHTML = `
+      <span style="color:${watch1.precio_base > watch2.precio_base ? '#4ade80' : '#f97373'}">${watch1.precio_base.toLocaleString('es-ES')}€</span>
+      <span style="color:#6b7280;font-size:0.7em"> vs </span>
+      <span style="color:${watch2.precio_base > watch1.precio_base ? '#4ade80' : '#f97373'}">${watch2.precio_base.toLocaleString('es-ES')}€</span>
+    `;
+    
+    document.getElementById('media_modelo').innerHTML = `
+      <span style="color:${watch1.stats.precio_promedio_modelo > watch2.stats.precio_promedio_modelo ? '#4ade80' : '#f97373'}">${watch1.stats.precio_promedio_modelo.toLocaleString('es-ES')}€</span>
+      <span style="color:#6b7280;font-size:0.7em"> vs </span>
+      <span style="color:${watch2.stats.precio_promedio_modelo > watch1.stats.precio_promedio_modelo ? '#4ade80' : '#f97373'}">${watch2.stats.precio_promedio_modelo.toLocaleString('es-ES')}€</span>
+    `;
+    
+    document.getElementById('relojes').innerHTML = `${watch1.stats.relojes_analizados} vs ${watch2.stats.relojes_analizados}`;
+    
+    // Cambiar botón a Clear
+    const btnCompare = document.getElementById('btnCompare');
+    btnCompare.textContent = '✕ CLEAR COMPARISON';
+    btnCompare.style.background = '#dc2626';
+    btnCompare.onclick = function() {
+      location.reload();
+    };
+    btnCompare.onclick = function() {
+      location.reload();
+    };
+    
+    // Modificar gráfico para mostrar ambas líneas
+    if (chartAno) chartAno.destroy();
+    
+    const ctx1 = document.getElementById('ch1').getContext('2d');
+    chartAno = new Chart(ctx1, {
+      type: 'line',
+      data: {
+        labels: watch2.graficos_año.map(p => p.año),
+        datasets: [{
+          label: `${watch1.modelo} ${watch1.año}`,
+          data: watch1.graficos_año.map(p => p.precio),
+          borderColor: '#4ade80',
+          backgroundColor: 'rgba(74,222,128,0.1)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.35,
+          pointRadius: 3
+        }, {
+          label: `${watch2.modelo} ${watch2.año}`,
+          data: watch2.graficos_año.map(p => p.precio),
+          borderColor: '#f97373',
+          backgroundColor: 'rgba(249,115,115,0.1)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.35,
+          pointRadius: 3
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: true, position: 'top' },
+          tooltip: { enabled: true }
+        },
+        scales: {
+          x: { title: { display: true, text: 'Año' }, grid: { color: 'rgba(31,41,55,0.6)' } },
+          y: { title: { display: true, text: 'Precio (€)' }, grid: { color: 'rgba(31,41,55,0.6)' } }
+        }
+      }
+    });
+  }
+
+  
+
 
   document.getElementById('form').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -571,7 +736,7 @@ window.onload = function () {
       alert('Error: ' + data.error);
       return;
     }
-
+  lastValuationData = data;  // Guardar data completa
     document.getElementById('placeholder').style.display = 'none';
     const resultado = document.getElementById('resultado');
     resultado.style.display = 'block';
@@ -586,23 +751,29 @@ setTimeout(() => { resultado.style.animation = 'fadeIn 0.5s ease forwards'; }, 1
     document.getElementById('ticker').textContent =
       `MODEL: ${payload.modelo.toUpperCase()} | FAIR VALUE: ${data.precio_estimado.toLocaleString('es-ES')}€ | PREMIUM: ${signTicker}${Math.abs(diffMediaPct).toFixed(1)}% vs INDEX`;
 
-    // Animación contador para el precio
-const precioEl = document.getElementById('precio');
-const precioFinal = data.precio_estimado;
-let precioActual = 0;
-const duracion = 1000; // 1 segundo
-const pasos = 30;
-const incremento = precioFinal / pasos;
-const intervalo = duracion / pasos;
+    // Animación contador para el precio (solo si NO hay comparación)
+if (!comparisonData) {
+  const precioEl = document.getElementById('precio');
+  const precioFinal = data.precio_estimado;
+  let precioActual = 0;
+  const duracion = 1000;
+  const pasos = 30;
+  const incremento = precioFinal / pasos;
+  const intervalo = duracion / pasos;
 
-const timer = setInterval(() => {
-  precioActual += incremento;
-  if (precioActual >= precioFinal) {
-    precioActual = precioFinal;
-    clearInterval(timer);
-  }
-  precioEl.textContent = Math.round(precioActual).toLocaleString('es-ES') + ' €';
-}, intervalo);
+  const timer = setInterval(() => {
+    precioActual += incremento;
+    if (precioActual >= precioFinal) {
+      precioActual = precioFinal;
+      clearInterval(timer);
+    }
+    precioEl.textContent = Math.round(precioActual).toLocaleString('es-ES') + ' €';
+  }, intervalo);
+} else {
+  // Si hay comparación, poner precio directo sin animación
+  document.getElementById('precio').textContent = data.precio_estimado.toLocaleString('es-ES') + ' €';
+}
+
 
 
     document.getElementById('rango').textContent =
@@ -780,11 +951,53 @@ calcularPrecioEscenario('Sin papeles', null, undefined, false);
       fv: data.precio_estimado,
       diff_media_pct: diffMediaPct
     });
-    cargarHistorial();
+        cargarHistorial();
+    
+    // Si hay comparación activa, mostrar lado a lado
+    if (comparisonData) {
+      mostrarComparacion(comparisonData, {
+        modelo: payload.modelo,
+        año: payload.año,
+        estado: payload.estado,
+        material: payload.material,
+        precio: data.precio_estimado,
+        precio_base: data.precio_base,
+        stats: data.stats,
+        graficos_año: data.graficos['por_año']
+
+      });
+    }
   });
 
-  cargarModelos();
+  // Listener del botón de comparación
+document.getElementById('btnCompare').addEventListener('click', function() {
+  if (!lastValuationData) return;
+  
+    comparisonData = {
+    modelo: document.getElementById('modelo').value,
+    año: parseInt(document.getElementById('anio').value),
+    estado: document.getElementById('estado').value,
+    material: document.getElementById('material').value,
+    precio: lastValuationData.precio_estimado,
+    precio_base: lastValuationData.precio_base,
+    stats: lastValuationData.stats,
+       graficos_año: lastValuationData.graficos['por_año']  // AÑADIR ESTA LÍNEA
+  };
+
+  
+  this.textContent = '✓ SAVED - Value another watch';
+  this.style.background = '#374151';
+  setTimeout(() => {
+    this.textContent = '+ ADD TO COMPARISON';
+    this.style.background = 'linear-gradient(90deg,#22c55e,#16a34a)';
+  }, 2000);
+});
+
+
+
+    cargarModelos();
 };
+
 </script>
 </body>
-</html> 
+</html>
