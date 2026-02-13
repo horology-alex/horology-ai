@@ -41,6 +41,12 @@ Two files run the entire app:
 `data/encoders.json` holds the full list of Rolex model/condition/material names (used only for populating dropdowns via `/api/models`).
 `data/dataset_stats.json` holds global dataset stats (81,725 watches) used in the response payload.
 
+## After every change
+
+After making any change to the repo, always:
+1. Update `CHANGELOG.md` — add an entry under today's date describing what changed and why
+2. Update `GUIDE.md` if any files were added, removed, or their purpose changed
+
 ## Data files (all committed, no large files)
 
 | File | Size | Purpose |
