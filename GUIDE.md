@@ -20,6 +20,14 @@ No necesita ninguna instalación — se sirve directamente desde `api.py`.
 
 ---
 
+### `scraper.py`
+Script para recoger datos de relojes desde Chrono24. Abre un navegador invisible, navega por los anuncios, extrae los datos de cada reloj (modelo, precio, año, estado, material, caja, papeles, ubicación) y los guarda en `data/watches.db`. Se configura con `TARGET_RECORDS` (cuántos relojes recoger) y `MARCA_URL` (qué marca scrapear). **No es necesario para que la app web funcione** — es solo para alimentar el dataset.
+
+### `requirements_scraper.txt`
+Lista de librerías necesarias exclusivamente para el scraper (`playwright`). Separadas del `requirements.txt` principal para no añadir peso a la app web en producción.
+
+---
+
 ## Archivos de configuración y despliegue
 
 ### `Procfile`

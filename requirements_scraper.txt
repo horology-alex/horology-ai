@@ -1,0 +1,2 @@
+# Dependencias solo para el scraper (no necesarias para ejecutar la app web)
+playwright==1.49.0

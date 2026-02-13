@@ -4,6 +4,15 @@ Registro de todos los cambios realizados en el proyecto, ordenados del más reci
 
 ---
 
+## 2026-02-13
+
+### Scraper de datos
+- Creado `scraper.py`: scraper de Chrono24 basado en playwright que recoge hasta N relojes y los guarda en `data/watches.db` (SQLite). Configurable con `TARGET_RECORDS` y `MARCA_URL`
+- Creado `requirements_scraper.txt` con las dependencias del scraper separadas de la app web
+- Actualizado `GUIDE.md` con descripción de los nuevos archivos
+
+---
+
 ## 2026-02-12
 
 ### Documentación
